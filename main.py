@@ -1,27 +1,25 @@
-import platform
+import os
 import asyncio
 from contextlib import asynccontextmanager
 import time
 import threading
+from dotenv import load_dotenv
 from fastapi import FastAPI, WebSocket, Request
 import cv2
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
+load_dotenv()
+
 def create_camera():
-    system = platform.system()
+    camera_type = os.getenv("CAMERA_TYPE", "webcam").lower()
 
-    if system == "Linux":
-        try:
-            return PiCamera()
-        except:
-            return WebcamCamera()
-
-    elif system == "Windows":
+    if camera_type == "picamera":
+        return PiCamera()
+    elif camera_type == "webcam":
         return WebcamCamera()
-
     else:
-        return WebcamCamera()
+        raise ValueError(f"Unknown CAMERA_TYPE: {camera_type}")
 
 class BaseCamera:
     def start(self):
@@ -75,13 +73,12 @@ class PiCamera(BaseCamera):
     MAX_WIDTH = 3280
     MAX_HEIGHT = 2464
 
-    def __init__(self, width=MAX_WIDTH, height=MAX_HEIGHT):
+    def __init__(self, width=1920, height=1080):
         from picamera2 import Picamera2
         self.picam2 = Picamera2()
 
         config = self.picam2.create_video_configuration(
-            main={"size": (width, height), "format": "RGB888"},
-            sensor={"output_size": (width, height)}
+            main={"size": (width, height), "format": "RGB888"}
         )
 
         self.picam2.configure(config)

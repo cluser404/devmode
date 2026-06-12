@@ -90,3 +90,24 @@ body {
 #capture-btn:active {
 	filter: brightness(0.9);
 }
+
+#snap-btn {
+	margin-top: 8px;
+	width: 100%;
+	padding: 10px;
+	border: 1px solid rgba(157,213,58,1);
+	border-radius: 4px;
+	background: transparent;
+	color: rgba(157,213,58,1);
+	font-weight: 600;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+#snap-btn:hover {
+	background: rgba(157,213,58,0.15);
+}
+
+#snap-btn:active {
+	background: rgba(157,213,58,0.3);
+}

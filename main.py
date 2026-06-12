@@ -28,6 +28,9 @@ class BaseCamera:
     def read(self):
         pass
 
+    def capture_high_res(self):
+        return None
+
     def stop(self):
         pass
 
@@ -64,6 +67,13 @@ class WebcamCamera(BaseCamera):
         with self.lock:
             return None if self.frame is None else self.frame.copy()
 
+    def capture_high_res(self):
+        frame = self.read()
+        if frame is None:
+            return None
+        _, jpeg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 95])
+        return jpeg.tobytes()
+
     def stop(self):
         self.running = False
         self.cap.release()
@@ -96,7 +106,11 @@ class PiCamera(BaseCamera):
 
     def _loop(self):
         while self.running:
-            frame = self.picam2.capture_array()
+            try:
+                frame = self.picam2.capture_array()
+            except Exception:
+                time.sleep(0.05)
+                continue
 
             with self.lock:
                 self.frame = frame
@@ -106,6 +120,16 @@ class PiCamera(BaseCamera):
     def read(self):
         with self.lock:
             return None if self.frame is None else self.frame.copy()
+
+    def capture_high_res(self):
+        still_config = self.picam2.create_still_configuration(
+            main={"size": (self.MAX_WIDTH, self.MAX_HEIGHT), "format": "RGB888"}
+        )
+
+        frame = self.picam2.switch_mode_and_capture_array(still_config)
+
+        _, jpeg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 95])
+        return jpeg.tobytes()
 
     def stop(self):
         self.running = False
@@ -138,21 +162,25 @@ async def ws_endpoint(ws: WebSocket):
         while True:
             frame = camera.read()
 
-            if frame is None:
-                await asyncio.sleep(0.05)
-                continue
+            if frame is not None:
+                frame = cv2.resize(frame, (640, 360))
+                _, jpeg = cv2.imencode(
+                    ".jpg",
+                    frame,
+                    [cv2.IMWRITE_JPEG_QUALITY, 55]
+                )
+                await ws.send_bytes(jpeg.tobytes())
 
-            frame = cv2.resize(frame, (640, 360))
-            _, jpeg = cv2.imencode(
-                ".jpg",
-                frame,
-                [cv2.IMWRITE_JPEG_QUALITY, 55]
-            )
-
-            await ws.send_bytes(jpeg.tobytes())
-            await asyncio.sleep(0.5)
-    except Exception:
-        pass
+            try:
+                data = await asyncio.wait_for(ws.receive_text(), timeout=0.5)
+                if data == "capture":
+                    jpeg = camera.capture_high_res()
+                    if jpeg is not None:
+                        await ws.send_bytes(b"HIRES" + jpeg)
+            except asyncio.TimeoutError:
+                pass
+    except Exception as e:
+        print("ws error:", e)
 
 @app.get("/")
 def home(request: Request):

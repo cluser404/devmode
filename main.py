@@ -36,7 +36,7 @@ class BaseCamera:
 
 
 class WebcamCamera(BaseCamera):
-    def __init__(self, device=0, width=1280, height=720):
+    def __init__(self, device=0, width=640, height=360):
         self.cap = cv2.VideoCapture(device)
 
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -83,7 +83,7 @@ class PiCamera(BaseCamera):
     MAX_WIDTH = 3280
     MAX_HEIGHT = 2464
 
-    def __init__(self, width=1920, height=1080):
+    def __init__(self, width=640, height=360):
         from picamera2 import Picamera2
         self.picam2 = Picamera2()
 
@@ -163,10 +163,7 @@ async def ws_endpoint(ws: WebSocket):
             frame = camera.read()
 
             if frame is not None:
-                frame = cv2.cvtColor(
-                    cv2.resize(frame, (640, 360)),
-                    cv2.COLOR_BGR2GRAY
-                )
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 _, jpeg = cv2.imencode(
                     ".jpg",
                     frame,

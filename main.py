@@ -13,7 +13,6 @@ def create_camera():
 
     if system == "Linux":
         try:
-            from picamera2 import Picamera2
             return PiCamera()
         except:
             return WebcamCamera()
@@ -77,6 +76,7 @@ class PiCamera(BaseCamera):
     MAX_HEIGHT = 2464
 
     def __init__(self, width=MAX_WIDTH, height=MAX_HEIGHT):
+        from picamera2 import Picamera2
         self.picam2 = Picamera2()
 
         config = self.picam2.create_video_configuration(

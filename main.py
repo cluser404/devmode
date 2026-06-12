@@ -142,10 +142,11 @@ async def ws_endpoint(ws: WebSocket):
                 await asyncio.sleep(0.05)
                 continue
 
+            frame = cv2.resize(frame, (960, 540))
             _, jpeg = cv2.imencode(
                 ".jpg",
                 frame,
-                [cv2.IMWRITE_JPEG_QUALITY, 100]
+                [cv2.IMWRITE_JPEG_QUALITY, 80]
             )
 
             await ws.send_bytes(jpeg.tobytes())

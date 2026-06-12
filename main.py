@@ -163,7 +163,10 @@ async def ws_endpoint(ws: WebSocket):
             frame = camera.read()
 
             if frame is not None:
-                frame = cv2.resize(frame, (640, 360))
+                frame = cv2.cvtColor(
+                    cv2.resize(frame, (640, 360)),
+                    cv2.COLOR_BGR2GRAY
+                )
                 _, jpeg = cv2.imencode(
                     ".jpg",
                     frame,

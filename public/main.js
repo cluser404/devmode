@@ -15,6 +15,17 @@ let selected = new Set();
 const ws = new WebSocket(`ws://${location.host}/ws`);
 ws.binaryType = "arraybuffer"
 
+function removeImage(idx) {
+	const item = hiresImages[idx];
+	URL.revokeObjectURL(item.url);
+	hiresImages.splice(idx, 1);
+	selected.delete(idx);
+	const shifted = [...selected].filter(i => i > idx).map(i => i - 1);
+	[...selected].filter(i => i > idx).forEach(i => selected.delete(i));
+	shifted.forEach(i => selected.add(i));
+	renderGallery();
+}
+
 function showModal(idx) {
 	const item = hiresImages[idx];
 	const existing = document.querySelector(".modal-overlay");
@@ -26,7 +37,10 @@ function showModal(idx) {
 		<div class="modal-content">
 			<button class="modal-close">&times;</button>
 			<img class="modal-img" src="${item.url}" />
-			<button class="modal-download">Download</button>
+			<div class="modal-actions">
+				<button class="modal-download">Download</button>
+				<button class="modal-delete">Delete</button>
+			</div>
 		</div>`;
 
 	overlay.querySelector(".modal-close").onclick = () => overlay.remove();
@@ -35,6 +49,10 @@ function showModal(idx) {
 		a.href = item.url;
 		a.download = "highres-" + item.ts + ".jpg";
 		a.click();
+	};
+	overlay.querySelector(".modal-delete").onclick = () => {
+		overlay.remove();
+		removeImage(idx);
 	};
 	overlay.addEventListener("click", (e) => {
 		if (e.target === overlay) overlay.remove();
@@ -71,9 +89,21 @@ function saveSelected() {
 	});
 }
 
+function deleteSelected() {
+	if (selected.size === 0) return;
+	const toRemove = [...selected].sort((a, b) => b - a);
+	toRemove.forEach(idx => {
+		URL.revokeObjectURL(hiresImages[idx].url);
+		hiresImages.splice(idx, 1);
+	});
+	selected.clear();
+	renderGallery();
+}
+
 function renderGallery() {
 	const count = hiresImages.length;
 	const headerSelect = selectMode ? `checked` : ``;
+	const hasSel = selectMode && selected.size > 0;
 	let html = `
 		<div class="gallery-bar">
 			<span class="gallery-header">High-Res Captures (${count})</span>
@@ -81,7 +111,8 @@ function renderGallery() {
 				<label class="gallery-select-toggle${selectMode ? ' active' : ''}">
 					<input type="checkbox" id="selectToggle" ${headerSelect} /> Select
 				</label>
-				<button class="gallery-save${selectMode && selected.size > 0 ? ' has-selection' : ''}" data-visible="${selectMode ? 'true' : 'false'}">Save Selected</button>
+				<button class="gallery-save${hasSel ? ' has-selection' : ''}">Save Selected</button>
+				<button class="gallery-delete${hasSel ? ' has-selection' : ''}">Delete</button>
 			</div>
 		</div>
 		<div class="gallery-list">`;
@@ -93,7 +124,7 @@ function renderGallery() {
 		const sel = selected.has(i);
 		html += `
 			<div class="gallery-item${sel ? ' selected' : ''}">
-				${selectMode ? `<input type="checkbox" class="gallery-check" data-index="${i}" ${sel ? 'checked' : ''} />` : ''}
+				${selectMode ? `<input type="checkbox" class="gallery-check" data-index="${i}" ${sel ? 'checked' : ''} />` : `<button class="gallery-remove" data-index="${i}">&times;</button>`}
 				<img class="gallery-thumb" src="${item.url}" data-index="${i}" />
 				<div class="gallery-meta">
 					<span class="gallery-time">${time}</span>
@@ -115,6 +146,14 @@ function renderGallery() {
 			} else {
 				showModal(idx);
 			}
+		});
+	});
+
+	document.querySelectorAll(".gallery-remove").forEach(el => {
+		el.addEventListener("click", (e) => {
+			e.stopPropagation();
+			const idx = parseInt(e.target.dataset.index);
+			removeImage(idx);
 		});
 	});
 
@@ -142,6 +181,11 @@ function renderGallery() {
 	const saveBtn = document.querySelector(".gallery-save");
 	if (saveBtn) {
 		saveBtn.addEventListener("click", saveSelected);
+	}
+
+	const deleteBtn = document.querySelector(".gallery-delete");
+	if (deleteBtn) {
+		deleteBtn.addEventListener("click", deleteSelected);
 	}
 }
 

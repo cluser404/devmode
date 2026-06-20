@@ -80,8 +80,8 @@ class WebcamCamera(BaseCamera):
 
 
 class PiCamera(BaseCamera):
-    MAX_WIDTH = 3280
-    MAX_HEIGHT = 2464
+    MAX_WIDTH = 1920
+    MAX_HEIGHT = 1080
 
     def __init__(self, width=640, height=360):
         from picamera2 import Picamera2

@@ -88,7 +88,8 @@ class PiCamera(BaseCamera):
         self.picam2 = Picamera2()
 
         config = self.picam2.create_video_configuration(
-            main={"size": (width, height), "format": "RGB888"}
+            main={"size": (width, height), "format": "RGB888"},
+            sensor={"output_size": (self.MAX_WIDTH, self.MAX_HEIGHT)}
         )
 
         self.picam2.configure(config)

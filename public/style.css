@@ -162,6 +162,21 @@ body {
 	transform: translateY(1px);
 }
 
+#snap-btn:disabled {
+	border-color: #555;
+	color: #666;
+	cursor: wait;
+	background: linear-gradient(to bottom, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+	box-shadow: none;
+	text-shadow: none;
+	animation: pulse-load 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-load {
+	0%, 100% { opacity: 0.5; }
+	50% { opacity: 1; }
+}
+
 #gallery {
 	border-top: 1px solid #2a2a2a;
 	padding: 16px 24px;

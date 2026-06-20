@@ -189,12 +189,22 @@ function renderGallery() {
 	}
 }
 
+document.getElementById("snap-btn").onclick = () => {
+	const btn = document.getElementById("snap-btn");
+	btn.disabled = true;
+	btn.textContent = "Capturing...";
+	ws.send("capture");
+};
+
 ws.onmessage = (event) => {
 	if (event.data instanceof ArrayBuffer) {
 		const buf = new Uint8Array(event.data);
 
 		if (buf.length >= HIRES_MAGIC_LEN &&
 			String.fromCharCode(...buf.slice(0, HIRES_MAGIC_LEN)) === HIRES_MAGIC) {
+			const btn = document.getElementById("snap-btn");
+			btn.disabled = false;
+			btn.textContent = "Snap High-Res";
 			const blob = new Blob([buf.slice(HIRES_MAGIC_LEN)], { type: "image/jpeg" });
 			const url = URL.createObjectURL(blob);
 			hiresImages.push({ url, ts: Date.now() });
@@ -231,8 +241,4 @@ document.getElementById("capture-btn").onclick = () => {
 		a.download = "capture-" + Date.now() + ".png";
 		a.click();
 	}, "image/png");
-};
-
-document.getElementById("snap-btn").onclick = () => {
-	ws.send("capture");
 };

@@ -1,9 +1,9 @@
 html, body {
 	margin: 0;
 	height: 100%;
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-	background: black;
-	color: white;
+	font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	background: #f8f9fa;
+	color: #2B2D42;
 }
 
 body {
@@ -12,10 +12,15 @@ body {
 }
 
 .bar {
-	background: linear-gradient(to bottom,  rgba(157,213,58,1) 0%,rgba(161,213,79,1) 50%,rgba(128,194,23,1) 51%,rgba(124,188,10,1) 100%);
-	color: white;
-	padding: 8px;
-	text-shadow: 0px 1px 1px darkgreen;
+	background: #fff;
+	color: #2B2D42;
+	padding: 10px 20px;
+	font-weight: 600;
+	font-size: 14px;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	border-bottom: 2px solid #FF6B35;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .container {
@@ -34,8 +39,9 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: #111;
+	background: #e9ecef;
 	border-radius: 4px;
+	border: 1px solid #DEE2E6;
 }
 
 .preview img {
@@ -47,6 +53,10 @@ body {
 .info {
 	width: 280px;
 	flex-shrink: 0;
+	background: #fff;
+	border: 1px solid #DEE2E6;
+	border-radius: 4px;
+	padding: 16px;
 }
 
 .info table {
@@ -56,17 +66,19 @@ body {
 }
 
 .info td {
-	padding: 8px 12px;
-	border-bottom: 1px solid #333;
+	padding: 8px 0;
+	border-bottom: 1px solid #e9ecef;
 }
 
 .info td:first-child {
-	color: #888;
+	color: #8D99AE;
+	font-weight: 500;
 }
 
 .info td:last-child {
 	font-variant-numeric: tabular-nums;
 	text-align: right;
+	font-weight: 600;
 }
 
 #capture-btn {
@@ -75,47 +87,50 @@ body {
 	padding: 10px;
 	border: none;
 	border-radius: 4px;
-	background: linear-gradient(to bottom, rgba(157,213,58,1) 0%, rgba(128,194,23,1) 100%);
-	color: #1a1a1a;
+	background: #FF6B35;
+	color: #fff;
 	font-weight: 600;
 	font-size: 14px;
 	cursor: pointer;
+	transition: background 0.15s;
 }
 
 #capture-btn:hover {
-	filter: brightness(1.1);
+	background: #e55a2b;
 }
 
 #capture-btn:active {
-	filter: brightness(0.9);
+	background: #cc4f24;
 }
 
 #snap-btn {
 	margin-top: 8px;
 	width: 100%;
 	padding: 10px;
-	border: 1px solid rgba(157,213,58,1);
+	border: 2px solid #FF6B35;
 	border-radius: 4px;
 	background: transparent;
-	color: rgba(157,213,58,1);
+	color: #FF6B35;
 	font-weight: 600;
 	font-size: 14px;
 	cursor: pointer;
+	transition: background 0.15s;
 }
 
 #snap-btn:hover {
-	background: rgba(157,213,58,0.15);
+	background: #fff0ea;
 }
 
 #snap-btn:active {
-	background: rgba(157,213,58,0.3);
+	background: #ffe0d6;
 }
 
 #gallery {
-	border-top: 1px solid #333;
+	border-top: 1px solid #DEE2E6;
 	padding: 16px 24px;
 	max-height: 240px;
 	overflow-y: auto;
+	background: #fff;
 }
 
 #gallery::-webkit-scrollbar {
@@ -123,19 +138,20 @@ body {
 }
 
 #gallery::-webkit-scrollbar-track {
-	background: #111;
+	background: #f1f3f5;
 }
 
 #gallery::-webkit-scrollbar-thumb {
-	background: #444;
+	background: #ced4da;
 	border-radius: 3px;
 }
 
 .gallery-header {
 	font-size: 13px;
-	color: #888;
+	color: #8D99AE;
 	text-transform: uppercase;
-	letter-spacing: 1px;
+	letter-spacing: 2px;
+	font-weight: 600;
 	margin-bottom: 12px;
 }
 
@@ -160,11 +176,11 @@ body {
 	cursor: pointer;
 	border: 2px solid transparent;
 	transition: border-color 0.15s;
-	background: #111;
+	background: #e9ecef;
 }
 
 .gallery-thumb:hover {
-	border-color: rgba(157,213,58,0.5);
+	border-color: #FF6B35;
 }
 
 .gallery-meta {
@@ -177,7 +193,8 @@ body {
 
 .gallery-time {
 	font-size: 11px;
-	color: #666;
+	color: #8D99AE;
+	font-weight: 500;
 }
 
 .modal-overlay {
@@ -225,17 +242,18 @@ body {
 
 .modal-download {
 	padding: 8px 24px;
-	border: 1px solid rgba(157,213,58,1);
+	border: 2px solid #FF6B35;
 	border-radius: 4px;
 	background: transparent;
-	color: rgba(157,213,58,1);
+	color: #FF6B35;
 	font-weight: 600;
 	font-size: 14px;
 	cursor: pointer;
+	transition: background 0.15s;
 }
 
 .modal-download:hover {
-	background: rgba(157,213,58,0.15);
+	background: #fff0ea;
 }
 
 @media (max-width: 768px) {
@@ -251,7 +269,7 @@ body {
 	}
 
 	.info {
-		width: 100%;
+		width: auto;
 		max-width: none;
 	}
 
@@ -263,5 +281,63 @@ body {
 	.gallery-thumb {
 		width: 80px;
 		height: 45px;
+	}
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+	.container {
+		flex-direction: row;
+		align-items: stretch;
+		padding: 8px;
+		gap: 8px;
+	}
+
+	.preview {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.info {
+		width: 180px;
+		flex-shrink: 0;
+		padding: 10px;
+	}
+
+	.info table {
+		font-size: 12px;
+	}
+
+	.info td {
+		padding: 4px 0;
+	}
+
+	#capture-btn,
+	#snap-btn {
+		padding: 6px;
+		font-size: 12px;
+		margin-top: 6px;
+	}
+
+	#gallery {
+		padding: 6px 8px;
+		max-height: 100px;
+	}
+
+	.gallery-header {
+		font-size: 11px;
+		margin-bottom: 6px;
+	}
+
+	.gallery-list {
+		gap: 6px;
+	}
+
+	.gallery-thumb {
+		width: 60px;
+		height: 34px;
+	}
+
+	.gallery-time {
+		font-size: 9px;
 	}
 }
